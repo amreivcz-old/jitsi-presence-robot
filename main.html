@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>The Page Returned by Making Http Call to Node.js</title>
+</head>
+
+<body>
+    <h1>TEst</h1>
+    <div id="jitsi-meet"></div>
+    <script src='https://meet.weimarnetz.de/external_api.js'></script>
+    <script src='/config.js'></script>
+    <script type="module">
+        const domain =window.config.jitsiURL;
+        const options = {
+            roomName: window.config.roomName,
+            width: 700,
+            height: 700,
+            parentNode: document.querySelector('#jitsi-meet'),
+            configOverwrite: { startWithAudioMuted: true, startWithVideoMuted: true, enableNoAudioDetection: false, enableWelcomePage: false },
+            // interfaceConfigOverwrite: {TOOLBAR_BUTTONS: [], DISABLE_JOIN_LEAVE_NOTIFICATIONS: true, HIDE_INVITE_MORE_HEADER: true, FILM_STRIP_MAX_HEIGHT: 0, VIDEO_QUALITY_LABEL_DISABLED: true, RECENT_LIST_ENABLED: false}, 
+            interfaceConfigOverwrite: { DISABLE_JOIN_LEAVE_NOTIFICATIONS: true, HIDE_INVITE_MORE_HEADER: true, FILM_STRIP_MAX_HEIGHT: 0, VIDEO_QUALITY_LABEL_DISABLED: true, RECENT_LIST_ENABLED: false },
+            userInfo: {
+                displayName: window.config.name
+            }
+        };
+        const api = new JitsiMeetExternalAPI(domain, options);
+        // const devices = await api.getCurrentDevices();
+        let enabled = true;
+        let dict = {};
+        let voters = [];
+        let votes = 0
+        api.getAvailableDevices().then(devices => { console.log(devices, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA") });
+        api.on('incomingMessage', (message) => {
+            if (enabled == true){
+                console.log('message bekommen', message); 
+                if (['f','r','l'].includes(message.message) && ! voters.includes(message.from)){
+                    dict[message.message] = dict[message.message]++;
+                    voters.push(message.from);
+                    votes+=1;
+                }
+                if (votes > api.getParticipantsInfo().length/4) {
+                    fetch("http://192.168.1.9:8441")
+                    console.log("action machen")
+                    votes = 0;
+                    dict = {};
+                    voters = [];
+                }
+            } else {
+                console.log("message ignored")
+            }
+        })
+        function enableRobot() {
+            enabled = ! enabled;
+            document.getElementById("robotStatus").innnerHTML= enabled
+            console.log(enabled, "changed robot control")
+        }
+    </script>
+    <button onclick="enableRobot()" type="button" id="robotStatus">Enable Robot</button> 
+    </div>
+</body>
+
+</html>

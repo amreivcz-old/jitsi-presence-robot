@@ -1,0 +1,5 @@
+window.config = {
+    name: ' Cam 1',
+    jitsiURL: 'foo.bar.com',
+    roomName: 'bar'
+}
