@@ -11,7 +11,7 @@
     <div id="jitsi-meet"></div>
     <script src='https://meet.weimarnetz.de/external_api.js'></script>
     <script src='/config.js'></script>
-    <script type="module">
+    <script>
         const domain =window.config.jitsiURL;
         const options = {
             roomName: window.config.roomName,
@@ -53,11 +53,15 @@
         })
         function enableRobot() {
             enabled = ! enabled;
-            document.getElementById("robotStatus").innnerHTML= enabled
+            if (enabled == true) {
+                document.getElementById("robotStatus").childNodes[0].nodeValue="disable Robot"
+            } else {
+                document.getElementById("robotStatus").childNodes[0].nodeValue="enable Robot"
+            }
             console.log(enabled, "changed robot control")
         }
     </script>
-    <button onclick="enableRobot()" type="button" id="robotStatus">Enable Robot</button> 
+    <button onclick="enableRobot()" type="button" id="robotStatus">disable Robot</button> 
     </div>
 </body>
 
