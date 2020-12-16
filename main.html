@@ -35,14 +35,38 @@
         api.on('incomingMessage', (message) => {
             if (enabled == true){
                 console.log('message bekommen', message); 
-                if (['f','r','l'].includes(message.message) && ! voters.includes(message.from)){
+                if (['f','r','l','h'].includes(message.message) && ! voters.includes(message.from)){
                     dict[message.message] = dict[message.message]++;
                     voters.push(message.from);
                     votes+=1;
                 }
                 if (votes > api.getParticipantsInfo().length/4) {
-                    fetch("http://192.168.1.9:8441")
+                    // fetch("http://192.168.1.9:8441")
                     console.log("action machen")
+                    let highest = 0;
+                    let selection = "";
+                    for (let [action, count] of Object.entries(dict)) {
+                        highest = count;
+                        selection = action;
+                    };
+                    switch(selection){
+                        case 'f':
+                            fetch("http://192.168.1.119/control?var=motor_both&val=50&val2=50")
+                            setTimeout(stopMotor, 500)
+                            break;
+                        case 'l':
+                            fetch("http://192.168.1.119/control?var=motor_both&val=0&val2=100")
+                            setTimeout(stopMotor, 500)
+                            break
+                        case 'r':
+                            fetch("http://192.168.1.119/control?var=motor_both&val=100&val2=0")
+                            setTimeout(stopMotor, 500)
+                            break;
+                        case 'h':
+                            fetch("http://192.168.1.119/control?var=motor_both&val=0&val2=0")
+                            break;
+                        default:break;
+                    };
                     votes = 0;
                     dict = {};
                     voters = [];
@@ -59,6 +83,9 @@
                 document.getElementById("robotStatus").childNodes[0].nodeValue="enable Robot"
             }
             console.log(enabled, "changed robot control")
+        }
+        function stopMotor(){
+            fetch("http://192.168.1.119/control?var=motor_both&val=0&val2=0")
         }
     </script>
     <button onclick="enableRobot()" type="button" id="robotStatus">disable Robot</button> 
