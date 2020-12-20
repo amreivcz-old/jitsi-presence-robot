@@ -39,16 +39,16 @@
                     dict[message.message] = dict[message.message]++;
                     voters.push(message.from);
                     votes+=1;
+                    console.log("Vote", message.from, " voted for ", message.message, " Count ", voters);
                 }
                 if (votes >= api.getParticipantsInfo().length/4) {
-                    // fetch("http://192.168.1.9:8441")
-                    console.log("action machen")
                     let highest = 0;
                     let selection = "";
                     for (let [action, count] of Object.entries(dict)) {
                         highest = count;
                         selection = action;
                     };
+                    console.log("action machen: ", selection)
                     fetch("http://"+robotIP+"/control?var=max_speed_right&val=100")
                     fetch("http://"+robotIP+"/control?var=max_speed_left&val=100")
                     switch(selection){
