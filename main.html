@@ -58,8 +58,8 @@
                         selection = action;
                     };
                     console.log("action machen: ", selection)
-                    fetch("http://"+robotIP+"/control?var=max_speed_right&val=100")
-                    fetch("http://"+robotIP+"/control?var=max_speed_left&val=100")
+                    fetch("http://"+robotIP+"/control?var=max_speed_right&val=30")
+                    fetch("http://"+robotIP+"/control?var=max_speed_left&val=50")
                     switch(selection){
                         case 'f':
                             fetch("http://"+robotIP+"/control?var=motor_both&val=50&val2=50")
