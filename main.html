@@ -9,7 +9,7 @@
 <body>
     <h1>TEst</h1>
     <div id="jitsi-meet"></div>
-    <script src='https://meet.weimarnetz.de/external_api.js'></script>
+    <script src='https://'+domain+'/external_api.js'></script>
     <script src='/config.js'></script>
     <script>
         const domain =window.config.jitsiURL;
@@ -40,7 +40,7 @@
                     voters.push(message.from);
                     votes+=1;
                 }
-                if (votes > api.getParticipantsInfo().length/4) {
+                if (votes >= api.getParticipantsInfo().length/4) {
                     // fetch("http://192.168.1.9:8441")
                     console.log("action machen")
                     let highest = 0;
@@ -49,17 +49,19 @@
                         highest = count;
                         selection = action;
                     };
+                    fetch("http://"+robotIP+"/control?var=max_speed_right&val=100")
+                    fetch("http://"+robotIP+"/control?var=max_speed_left&val=100")
                     switch(selection){
                         case 'f':
-                            fetch("http://192.168.1.119/control?var=motor_both&val=50&val2=50")
+                            fetch("http://"+robotIP+"/control?var=motor_both&val=50&val2=50")
                             setTimeout(stopMotor, 500)
                             break;
                         case 'l':
-                            fetch("http://192.168.1.119/control?var=motor_both&val=0&val2=100")
+                            fetch("http://"+robotIP+"/control?var=motor_both&val=0&val2=100")
                             setTimeout(stopMotor, 500)
                             break
                         case 'r':
-                            fetch("http://192.168.1.119/control?var=motor_both&val=100&val2=0")
+                            fetch("http://"+robotIP+"/control?var=motor_both&val=100&val2=0")
                             setTimeout(stopMotor, 500)
                             break;
                         case 'h':
