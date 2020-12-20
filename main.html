@@ -10,7 +10,7 @@
     <h1>TEst</h1>
     <div id="jitsi-meet"></div>
     <script src='/config.js'></script>
-    <script src='https://'+window.config.jitsiURL+'/external_api.js'></script>
+    <script src='https://meet.weimarnetz.de/external_api.js'></script>
     <script>
         const domain =window.config.jitsiURL;
         const robotIP = window.config.robotIP;
@@ -32,15 +32,23 @@
         let dict = {};
         let voters = [];
         let votes = 0
+        fetch("http://"+robotIP+"/control?var=motor_both&val=0&val2=0")
+        fetch("http://"+robotIP+"/control?var=max_speed_right&val=100")
+        fetch("http://"+robotIP+"/control?var=max_speed_left&val=100")
         api.getAvailableDevices().then(devices => { console.log(devices, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA") });
         api.on('incomingMessage', (message) => {
             if (enabled == true){
                 console.log('message bekommen', message); 
-                if (['f','r','l','h'].includes(message.message) && ! voters.includes(message.from)){
-                    dict[message.message] = dict[message.message]++;
-                    voters.push(message.from);
-                    votes+=1;
-                    console.log("Vote", message.from, " voted for ", message.message, " Count ", voters);
+                let timestamp = Math.floor(new Date(message.stamp));
+                if  ((timestamp - Math.floor(Date.now())) < 5000) {
+                    if (['f','r','l','h'].includes(message.message) && ! voters.includes(message.from )){
+                        dict[message.message] = dict[message.message]++;
+                        voters.push(message.from);
+                        votes+=1;
+                        console.log("Vote", message.from, " voted for ", message.message, " Count ", voters);
+                    }
+                } else {
+                    fetch("http://"+robotIP+"/control?var=motor_both&val=0&val2=0")
                 }
                 if (votes >= api.getParticipantsInfo().length/4) {
                     let highest = 0;
@@ -62,11 +70,11 @@
                             setTimeout(stopMotor, 500)
                             break
                         case 'r':
-                            fetch("http://"+robotIP+"/control?var=motor_both&val=100&val2=0")
+                            fetch("http://+robotIP+"/"control?var=motor_both&val=100&val2=0")
                             setTimeout(stopMotor, 500)
                             break;
                         case 'h':
-                            fetch("http://192.168.1.119/control?var=motor_both&val=0&val2=0")
+                            fetch("http://"+robotIP+"/control?var=motor_both&val=0&val2=0")
                             break;
                         default:break;
                     };
