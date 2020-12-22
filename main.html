@@ -20,7 +20,7 @@
             height: 700,
             parentNode: document.querySelector('#jitsi-meet'),
             configOverwrite: { startWithAudioMuted: true, startWithVideoMuted: true, enableNoAudioDetection: false, enableWelcomePage: false },
-            // interfaceConfigOverwrite: {TOOLBAR_BUTTONS: [], DISABLE_JOIN_LEAVE_NOTIFICATIONS: true, HIDE_INVITE_MORE_HEADER: true, FILM_STRIP_MAX_HEIGHT: 0, VIDEO_QUALITY_LABEL_DISABLED: true, RECENT_LIST_ENABLED: false}, 
+            // interfaceConfigOverwrite: {TOOLBAR_BUTTONS: [], DISABLE_JOIN_LEAVE_NOTIFICATIONS: true, HIDE_INVITE_MORE_HEADER: true, FILM_STRIP_MAX_HEIGHT: 0, VIDEO_QUALITY_LABEL_DISABLED: true, RECENT_LIST_ENABLED: false},
             interfaceConfigOverwrite: { DISABLE_JOIN_LEAVE_NOTIFICATIONS: true, HIDE_INVITE_MORE_HEADER: true, FILM_STRIP_MAX_HEIGHT: 0, VIDEO_QUALITY_LABEL_DISABLED: true, RECENT_LIST_ENABLED: false },
             userInfo: {
                 displayName: window.config.name
@@ -38,7 +38,7 @@
         api.getAvailableDevices().then(devices => { console.log(devices, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA") });
         api.on('incomingMessage', (message) => {
             if (enabled == true){
-                console.log('message bekommen', message); 
+                console.log('message bekommen', message);
                 let timestamp = Math.floor(new Date(message.stamp));
                 if  ((timestamp - Math.floor(Date.now())) < 5000) {
                     if (['f','r','l','h'].includes(message.message) && ! voters.includes(message.from )){
@@ -98,16 +98,17 @@
         function stopMotor(){
             fetch("http://192.168.1.119/control?var=motor_both&val=0&val2=0")
         }
-        
+
         let explanationFunc = function() {
-            let msgbox = document.getElementById("usermsg");
+            let iframe = document.getElementById('jitsiConferenceFrame0').contentWindow;
+            let msgbox = iframe.document.getElementById("usermsg");
             msgbox.value = 'Type "l" "r" or "f" to vote for a direction. Must be lower case single letter messages. Only one vote per person and instruction cycle is counted.';
             msgbox.dispatchEvent(new KeyboardEvent('keydown', {'key': 'Enter'}));
         };
 
         let explanation = window.setInterval(explanationFunc, 3000);
     </script>
-    <button onclick="enableRobot()" type="button" id="robotStatus">disable Robot</button> 
+    <button onclick="enableRobot()" type="button" id="robotStatus">disable Robot</button>
     </div>
 </body>
 
