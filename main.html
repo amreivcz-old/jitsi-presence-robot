@@ -40,7 +40,7 @@
         api.on('incomingMessage', (message) => {
             if (enabled == true){
                 console.log('message bekommen', message, voters);
-                if (['f','r','l','h', 'b'].includes(message.message) && ! voters.includes(message.from)){
+                if (['ff', 'f', 'r', 'l', 'ww', 'w', 'a', 'd', 'h', 'b'].includes(message.message) && ! voters.includes(message.from)){
                     // collect votes
                     dict[message.message] += 1;
                     voters.push(message.from);
@@ -72,14 +72,22 @@
 	    fetch("http://"+robotIP+"/control?var=max_speed_left&val=50")
 	    let drive_time = 700;
 	    switch(selection){
+	        case 'ww':
+	        case 'ff':
+	            fetch("http://"+robotIP+"/control?var=motor_both&val=50&val2=50")
+	            setTimeout(stopMotor, 2 * drive_time)
+	            break;
+	        case 'w':
 	        case 'f':
 	            fetch("http://"+robotIP+"/control?var=motor_both&val=50&val2=50")
 	            setTimeout(stopMotor, drive_time)
 	            break;
+	        case 'a':
 	        case 'l':
 	            fetch("http://"+robotIP+"/control?var=motor_both&val=0&val2=100")
 	            setTimeout(stopMotor, drive_time)
-	            break
+	            break;
+	        case 'd':
 	        case 'r':
 	            fetch("http://"+robotIP+"/control?var=motor_both&val=100&val2=0")
 	            setTimeout(stopMotor, drive_time)
@@ -101,7 +109,7 @@
         }
         
         function init_dict() {
-            return {'f': 0, 'l': 0, 'r': 0, 'h': 0, 'b': 0}
+            return {'ff': 0, 'f': 0, 'l': 0, 'r': 0, 'ww': 0, 'w': 0, 'a': 0, 'd': 0, 'h': 0, 'b': 0}
         }
         
         function enableRobot() {
