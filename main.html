@@ -40,7 +40,7 @@
         api.on('incomingMessage', (message) => {
             if (enabled == true){
                 console.log('message bekommen', message); 
-                    if (['f','r','l','h'].includes(message.message) && ! voters.includes(message.from )){
+                    if (['f','r','l','h', 'b'].includes(message.message) && ! voters.includes(message.from )){
                         dict[message.message] = dict[message.message]++;
                         voters.push(message.from);
                         votes+=1;
@@ -74,7 +74,8 @@
                             fetch("http://"+robotIP+"/control?var=lamp&val=0")
                             break;
                         case 'b':
-                            fetch("http://"+robotIP+"/control?var=lamp&val=100")
+                            fetch("http://"+robotIP+"/control?var=lamp&val=50")
+                            setTimeout(function(){fetch("http://"+robotIP+"/control?var=lamp&val=0")}, 3000);
                             break;
                         default:break;
                     };
