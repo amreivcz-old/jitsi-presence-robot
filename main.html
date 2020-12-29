@@ -29,9 +29,9 @@
         const api = new JitsiMeetExternalAPI(domain, options);
         // const devices = await api.getCurrentDevices();
         let enabled = true;
-        let dict = {};
+        let dict = init_dict();
         let voters = [];
-        let votes = 0
+
         fetch("http://"+robotIP+"/control?var=motor_both&val=0&val2=0")
         fetch("http://"+robotIP+"/control?var=max_speed_right&val=100")
         fetch("http://"+robotIP+"/control?var=max_speed_left&val=100")
@@ -39,29 +39,34 @@
         api.getAvailableDevices().then(devices => { console.log(devices, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA") });
         api.on('incomingMessage', (message) => {
             if (enabled == true){
-                console.log('message bekommen', message);
-                if (['f','r','l','h', 'b'].includes(message.message) && ! voters.includes(message.from )){
+                console.log('message bekommen', message, voters);
+                if (['f','r','l','h', 'b'].includes(message.message) && ! voters.includes(message.from)){
                     // collect votes
-                    dict[message.message] = dict[message.message]++;
+                    dict[message.message] += 1;
                     voters.push(message.from);
-                    votes += 1;
-                    console.log("Vote", message.from, " voted for ", message.message, " Count ", voters);
-                }
-                if (votes >= api.getParticipantsInfo().length/4) {
-                    count_votes_and_drive();
+                    console.log("Vote", message.from, " voted for ", message.message, " Count ", dict);
                 }
             } else {
                 console.log("message ignored")
             }
-        })
+        });
+        
+        window.setInterval(function(){ count_votes_and_drive() }, 3000);
         
         function count_votes_and_drive() {
+            console.log("couting votes", dict, voters)
 	    let highest = 0;
 	    let selection = "";
 	    for (let [action, count] of Object.entries(dict)) {
-	        highest = count;
-	        selection = action;
+	        if (count >= highest) {
+	            highest = count;
+	            selection = action;
+	        }
 	    };
+
+	    if (highest === 0)
+	        return;
+	    
 	    console.log("action machen: ", selection, highest)
 	    fetch("http://"+robotIP+"/control?var=max_speed_right&val=30")
 	    fetch("http://"+robotIP+"/control?var=max_speed_left&val=50")
@@ -90,9 +95,13 @@
 	        default:
 	            break;
 	    };
-	    votes = 0;
-	    dict = {};
+	    
+	    dict = init_dict();
 	    voters = [];
+        }
+        
+        function init_dict() {
+            return {'f': 0, 'l': 0, 'r': 0, 'h': 0, 'b': 0}
         }
         
         function enableRobot() {
