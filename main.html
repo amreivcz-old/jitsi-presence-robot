@@ -43,7 +43,7 @@
                     if (['f','r','l','h', 'b'].includes(message.message) && ! voters.includes(message.from )){
                         dict[message.message] = dict[message.message]++;
                         voters.push(message.from);
-                        votes+=1;
+                        votes += 1;
                         console.log("Vote", message.from, " voted for ", message.message, " Count ", voters);
                     }
                 if (votes >= api.getParticipantsInfo().length/4) {
@@ -56,18 +56,19 @@
                     console.log("action machen: ", selection)
                     fetch("http://"+robotIP+"/control?var=max_speed_right&val=30")
                     fetch("http://"+robotIP+"/control?var=max_speed_left&val=50")
+                    let drive_time = 700;
                     switch(selection){
                         case 'f':
                             fetch("http://"+robotIP+"/control?var=motor_both&val=50&val2=50")
-                            setTimeout(stopMotor, 500)
+                            setTimeout(stopMotor, drive_time)
                             break;
                         case 'l':
                             fetch("http://"+robotIP+"/control?var=motor_both&val=0&val2=100")
-                            setTimeout(stopMotor, 500)
+                            setTimeout(stopMotor, drive_time)
                             break
                         case 'r':
                             fetch("http://"+robotIP+"/control?var=motor_both&val=100&val2=0")
-                            setTimeout(stopMotor, 500)
+                            setTimeout(stopMotor, drive_time)
                             break;
                         case 'h':
                             fetch("http://"+robotIP+"/control?var=motor_both&val=0&val2=0")
@@ -77,7 +78,8 @@
                             fetch("http://"+robotIP+"/control?var=lamp&val=50")
                             setTimeout(function(){fetch("http://"+robotIP+"/control?var=lamp&val=0")}, 3000);
                             break;
-                        default:break;
+                        default:
+                            break;
                     };
                     votes = 0;
                     dict = {};
