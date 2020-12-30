@@ -51,7 +51,7 @@
             }
         });
         
-        window.setInterval(function(){ count_votes_and_drive() }, 2000);
+        window.setInterval(function(){ count_votes_and_drive() }, 1500);
         
         function count_votes_and_drive() {
             console.log("couting votes", dict, voters)
@@ -68,7 +68,7 @@
 	        return;
 	    
 	    console.log("action machen: ", selection, highest)
-	    fetch("http://"+robotIP+"/control?var=max_speed_right&val=30")
+	    fetch("http://"+robotIP+"/control?var=max_speed_right&val=36")
 	    fetch("http://"+robotIP+"/control?var=max_speed_left&val=50")
 	    let drive_time = 700;
 	    switch(selection){
